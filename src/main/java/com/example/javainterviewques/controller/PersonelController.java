@@ -1,13 +1,12 @@
 package com.example.javainterviewques.controller;
 
-
-
 import com.example.javainterviewques.annotations.CurrentUser;
 import com.example.javainterviewques.model.Personel;
 import com.example.javainterviewques.model.User;
 import com.example.javainterviewques.service.PersonelService;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,24 +51,32 @@ public class PersonelController {
     public void sil(@PathVariable Long id) {
         service.sil(id);
     }
- 
 
-        @GetMapping("/me")
-        public List<Personel> getProfile(@CurrentUser User user) {
-        	
-        	if(user.getRole().equals("ROLE_USER")) {
-        		        	
-        		return  service.tumPersoneller();
-        	}
-
-           // ResponseEntity.ok(user);
-            
-            return null;
+    @GetMapping("/me")
+    public List<Personel> getProfile(@CurrentUser User user) {
+        if(user.getRole().equals("ROLE_USER")) {
+            return service.tumPersoneller();
         }
-        
-    
+        return null;
+    }
 
+    @GetMapping("/personel/list")
+    public String personelListesi(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            Model model
+    ) {
+        Page<Personel> personelPage = service.getPersonelPage(page, size, sortBy, direction);
 
-    
-    
+        model.addAttribute("personelPage", personelPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", personelPage.getTotalPages());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("direction", direction);
+
+        return "personel_list";
+    }
+
 }

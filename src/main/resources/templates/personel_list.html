@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Personel Listesi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Personel Listesi</h2>
+
+    <!-- Arama Formu -->
+    <form method="get" action="#" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="keyword" th:value="${keyword}" class="form-control" placeholder="Ad veya Soyad ara...">
+            <button class="btn btn-primary" type="submit">Ara</button>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>
+                <a th:href="@{|/personelpage/list?page=${currentPage}&size=20&sortBy=id&direction=${direction == 'asc' ? 'desc' : 'asc'}&keyword=${keyword}|}">
+                    ID
+                </a>
+            </th>
+            <th>
+                <a th:href="@{|/personelpage/list?page=${currentPage}&size=20&sortBy=ad&direction=${direction == 'asc' ? 'desc' : 'asc'}&keyword=${keyword}|}">
+                    Ad
+                </a>
+            </th>
+            <th>
+                <a th:href="@{|/personelpage/list?page=${currentPage}&size=20&sortBy=soyad&direction=${direction == 'asc' ? 'desc' : 'asc'}&keyword=${keyword}|}">
+                    Soyad
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="personel : ${personelPage.content}">
+            <td th:text="${personel.id}"></td>
+            <td th:text="${personel.ad}"></td>
+            <td th:text="${personel.soyad}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination Bar -->
+    <nav>
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{|/personelpage/list?page=${currentPage - 1}&size=20&sortBy=${sortBy}&direction=${direction}&keyword=${keyword}|}">
+                    Previous
+                </a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                class="page-item"
+                th:classappend="${i} == ${currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{|/personelpage/list?page=${i}&size=20&sortBy=${sortBy}&direction=${direction}&keyword=${keyword}|}"
+                   th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{|/personelpage/list?page=${currentPage + 1}&size=20&sortBy=${sortBy}&direction=${direction}&keyword=${keyword}|}">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
