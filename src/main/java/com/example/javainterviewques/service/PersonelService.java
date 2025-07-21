@@ -1,9 +1,11 @@
 package com.example.javainterviewques.service;
 
-
-
 import com.example.javainterviewques.model.Personel;
 import com.example.javainterviewques.repository.PersonelRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,4 +35,26 @@ public class PersonelService {
     public void sil(Long id) {
         repository.deleteById(id);
     }
+
+    // ✅ Pagination ve Sorting eklenen yeni metot
+    public Page<Personel> getPersonelPage(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return repository.findAll(pageable);
+    }
+    
+    public Page<Personel> searchPersonel(String keyword, int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        if (keyword == null || keyword.isEmpty()) {
+            return repository.findAll(pageable);
+        }
+
+        return repository.findByAdContainingIgnoreCaseOrSoyadContainingIgnoreCase(keyword, keyword, pageable);
+    }
+    
 }

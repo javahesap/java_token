@@ -32,12 +32,15 @@ public class SecurityConfig {
     	http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(
-                "/api/login",
-                "/api/register",
-                "/api/refresh-token",
-                "/swagger-ui.html",
-                "/swagger-ui/**",
-                "/v3/api-docs/**"
+            		"/api/login",
+            	    "/api/register",
+            	    "/api/refresh-token",
+            	    "/swagger-ui.html",
+            	    "/swagger-ui/**",
+            	    "/v3/api-docs/**",
+            	    "/personelpage/**",
+            	    "/personel/list",       // Bu satırı ekle
+            	    "/personel/**"          // İstersen personel sayfaları için genel izin
             ).permitAll()
             .requestMatchers("/api/admin/dashboard").hasRole("ADMIN")  // Burada hasRole kullan
             .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
